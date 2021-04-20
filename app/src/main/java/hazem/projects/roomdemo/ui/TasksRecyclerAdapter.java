@@ -83,14 +83,20 @@ public class TasksRecyclerAdapter extends RecyclerView.Adapter<TasksRecyclerAdap
                 notesText.setText(task.getNotes());
             } else notesText.setVisibility(View.GONE);
 
-            checkBox.setOnClickListener(view -> {
+            checkBox.setOnClickListener(new View.OnClickListener() {
+              @Override
+              public void onClick(View view) {
                 task.setChecked(!task.isChecked());
                 repository.update(task);
                 checkBox.setChecked(task.isChecked());
+              }
             });
 
-            deleteButton.setOnClickListener(view -> {
+            deleteButton.setOnClickListener(new View.OnClickListener() {
+              @Override
+              public void onClick(View view) {
                 repository.delete(task);
+              }
             });
         }
 
