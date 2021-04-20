@@ -26,9 +26,9 @@ public interface TasksDao {
     void deleteAll();
 
     @Query("select * from tasks_table where id = :id")
-    LiveData<Task> get(long id);
+    LiveData<Task> getTaskById(long id);
 
-    @Query("select * from tasks_table order by id desc")
-    LiveData<List<Task>> getAll();
+    @Query("select * from tasks_table order by id")
+    LiveData<List<Task>> getAllTasks();
 
 }
