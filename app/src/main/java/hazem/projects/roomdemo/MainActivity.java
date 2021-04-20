@@ -1,49 +1,60 @@
 package hazem.projects.roomdemo;
 
+import android.content.Intent;
 import android.os.Bundle;
-
-import com.google.android.material.snackbar.Snackbar;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.View;
-
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-
-import hazem.projects.roomdemo.databinding.ActivityMainBinding;
-
-import android.view.Menu;
-import android.view.MenuItem;
+import hazem.projects.roomdemo.data.TasksRepository;
+import hazem.projects.roomdemo.ui.TasksRecyclerAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
-    private AppBarConfiguration appBarConfiguration;
-    private ActivityMainBinding binding;
-
+    TextView alertText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
 
-        setSupportActionBar(binding.toolbar);
+        setContentView(R.layout.activity_main);
 
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+//        setSupportActionBar(binding.toolbar);
+
+        alertText = findViewById(R.id.alert_textView);
+
+        initRecyclerView();
+
+        findViewById(R.id.add_button).setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, AddNoteActivity.class);
+            startActivity(intent);
+        });
 
 
     }
 
+    private void initRecyclerView() {
+        TasksRepository repository = TasksRepository.getInstance(this);
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        return NavigationUI.navigateUp(navController, appBarConfiguration)
-                || super.onSupportNavigateUp();
+        RecyclerView tasksRecyclerView = findViewById(R.id.tasks_recyclerView);
+        TasksRecyclerAdapter adapter = new TasksRecyclerAdapter(this);
+
+        // TODO 6.1 - Retrieve tasks using LiveData
+        repository.getAll().observe(this, tasks -> {
+            adapter.setTasks(tasks);
+            showAlert(tasks.isEmpty());
+        });
+
+        tasksRecyclerView.setAdapter(adapter);
+        tasksRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+    }
+
+    private void showAlert(boolean isEmpty){
+        if (isEmpty)  alertText.setVisibility(View.VISIBLE);
+        else alertText.setVisibility(View.GONE);
     }
 }
