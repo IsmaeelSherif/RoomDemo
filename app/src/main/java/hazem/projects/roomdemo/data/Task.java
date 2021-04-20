@@ -24,14 +24,9 @@ public class Task {
     //TODO 2.4 - Choose the constructor
 
     @Ignore
-    public Task(String title, String notes) {
+    public Task(String title, String notes, boolean isChecked) {
         this.title = title;
         this.notes = notes;
-    }
-
-    @Ignore
-    public Task(String title, String notes, boolean isChecked) {
-        this(title,notes);
         this.isChecked = isChecked;
     }
 
